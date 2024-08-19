@@ -1,0 +1,107 @@
+<ng-container [ngSwitch]="field.type">
+  <!-- Checkbox Starts -->
+
+  <ng-container *ngSwitchCase="fieldType.Checkbox">
+    <mat-checkbox [formControl]="control" color="primary">
+      {{ field.name }}
+    </mat-checkbox>
+  </ng-container>
+
+  <!-- Checkbox Ends -->
+
+  <!-- DatePicker Starts -->
+
+  <ng-container *ngSwitchCase="fieldType.DatePicker">
+    <mat-form-field>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [placeholder]="field.name"
+        [formControl]="control"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+  </ng-container>
+
+  <!-- DatePicker Ends -->
+
+  <!-- Radio Starts -->
+
+  <ng-container *ngSwitchCase="fieldType.Radio">
+    <mat-radio-group [formControl]="control">
+      <mat-radio-button
+        *ngFor="let option of field.options"
+        [value]="option"
+        color="primary"
+      >
+        {{ option }}
+      </mat-radio-button>
+    </mat-radio-group>
+  </ng-container>
+
+  <!-- Radio Ends -->
+
+  <!-- Select Dropdown Starts -->
+
+  <ng-container *ngSwitchCase="fieldType.SelectDropDown">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ field.name }}</mat-label>
+      <mat-select [placeholder]="field.name" [formControl]="control">
+        <mat-option *ngFor="let option of field.options" [value]="option">{{
+          option
+        }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </ng-container>
+
+  <!-- Select Dropdown Ends -->
+
+  <!-- Select List Starts -->
+
+  <ng-container *ngSwitchCase="fieldType.SelectList">
+    <mat-selection-list [formControl]="control" color="primary">
+      <mat-list-option
+        *ngFor="let option of field.options"
+        mySelectionList
+        [value]="option"
+        color="primary"
+        checkboxPosition="before"
+      >
+        {{ option }}
+      </mat-list-option>
+    </mat-selection-list>
+  </ng-container>
+
+  <!-- Select List Ends -->
+
+  <!-- TextArea Starts -->
+
+  <ng-container *ngSwitchCase="fieldType.TextArea">
+    <mat-form-field>
+      <textarea
+        matInput
+        type="text"
+        [formControl]="control"
+        [placeholder]="field.name"
+      ></textarea>
+    </mat-form-field>
+  </ng-container>
+
+  <!-- TextArea Ends -->
+
+  <!-- TextArea Starts -->
+
+  <ng-container *ngSwitchCase="fieldType.TextField">
+    <mat-form-field>
+      <input
+        matInput
+        type="text"
+        [formControl]="control"
+        [placeholder]="field.name"
+      />
+    </mat-form-field>
+  </ng-container>
+
+  <!-- TextArea Ends -->
+</ng-container>
