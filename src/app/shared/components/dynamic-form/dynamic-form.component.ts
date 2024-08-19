@@ -14,64 +14,15 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { Error, Field, KeyValuePair } from '../models';
+import { Field, KeyValuePair } from 'src/app/models';
+// import { Error, Field, KeyValuePair } from '../models';
 
-// export enum FieldType {
-//   CHECKBOX,
-//   DATEPICKER,
-//   RADIO,
-//   SELECTDROPDOWN,
-//   SELECTLIST,
-//   SLIDETOGGLE,
-//   TEXTAREA,
-//   TEXTFIELD,
-//   SUBHEADER,
-//   DIVIDER,
-// }
-
-// export interface Field {
-//   name: string;
-//   type: FieldType;
-//   children?: Field[];
-//   defaultValue?: any;
-//   disabled?: boolean;
-//   options?: string[];
-//   parent?: string;
-//   validation?: Validators[];
-//   visible?: boolean;
-// }
-
-// export interface KeyValuePair {
-//   key: string;
-//   value: any;
-// }
-
-// export interface Error {
-//   name: string;
-//   text: string;
-//   rules: Validators[];
-// }
 @Component({
   selector: 'app-dynamic-form',
   templateUrl: './dynamic-form.component.html',
   styleUrls: ['./dynamic-form.component.scss'],
 })
 export class DynamicFormComponent implements OnInit {
-  /**************************************** */
-
-  toppings = new FormControl('');
-
-  toppingList: string[] = [
-    'Extra cheese',
-    'Mushroom',
-    'Onion',
-    'Pepperoni',
-    'Sausage',
-    'Tomato',
-  ];
-
-  /*************************************** */
-
   protected readonly formBuilder = inject(UntypedFormBuilder);
 
   /**
@@ -132,16 +83,16 @@ export class DynamicFormComponent implements OnInit {
       /**
        * Add Slide Toggle child fields if needed
        */
-      if (field.children) {
-        field.children.forEach((child) => {
-          this.form.addControl(child.name, this.initializeFormControl(child));
-        });
-        this.togglesWithChildren.push({
-          name: field.name,
-          value: field.defaultValue,
-          children: field.children,
-        });
-      }
+      // if (field.children) {
+      //   field.children.forEach((child) => {
+      //     this.form.addControl(child.name, this.initializeFormControl(child));
+      //   });
+      //   this.togglesWithChildren.push({
+      //     name: field.name,
+      //     value: field.defaultValue,
+      //     children: field.children,
+      //   });
+      // }
     });
 
     /**
@@ -155,7 +106,7 @@ export class DynamicFormComponent implements OnInit {
     /**
      * Populate the Slide Toggle child fields if needed
      */
-    this.handleSlideToggleChildren();
+    // this.handleSlideToggleChildren();
 
     /**
      * That's it, we're ready to go! Turn on the Template! 🥳
@@ -177,27 +128,27 @@ export class DynamicFormComponent implements OnInit {
      * Default Slide Toggles to true unless otherwise specified,
      * push specific false toggles to falseToggles array
      */
-    if (field.type === 5) {
-      if (typeof value === 'undefined') {
-        value = true;
-      }
+    // if (field.type === 5) {
+    //   if (typeof value === 'undefined') {
+    //     value = true;
+    //   }
 
-      if (field.defaultValue === false) {
-        this.hideChildren(field);
-      }
-    }
+    //   if (field.defaultValue === false) {
+    //     this.hideChildren(field);
+    //   }
+    // }
 
     /**
      * Check each field for a coordinating field in prefillData
      */
-    if (this.prefillData) {
-      const defaultValue = this.prefillData.filter(
-        (element, index) => element.key === field.name
-      );
-      if (defaultValue.length) {
-        value = defaultValue[0].value;
-      }
-    }
+    // if (this.prefillData) {
+    //   const defaultValue = this.prefillData.filter(
+    //     (element, index) => element.key === field.name
+    //   );
+    //   if (defaultValue.length) {
+    //     value = defaultValue[0].value;
+    //   }
+    // }
 
     /**
      * Handle validation (or initialize null), disabled fields, and visibility
@@ -218,48 +169,48 @@ export class DynamicFormComponent implements OnInit {
     /**
      * Set up valueChanges subscription for each Slide Toggle field w/ children
      */
-    this.togglesWithChildren.forEach((parent) => {
-      this.form.controls[parent.name].valueChanges.subscribe((value) => {
-        this.toggleChildren(parent.name, value);
-      });
-    });
+    // this.togglesWithChildren.forEach((parent) => {
+    //   this.form.controls[parent.name].valueChanges.subscribe((value) => {
+    //     this.toggleChildren(parent.name, value);
+    //   });
+    // });
   }
 
-  toggleChildren(name, toggleValue): void {
-    const parentIndex = this.fieldset.findIndex((field) => field.name === name);
+  // toggleChildren(name, toggleValue): void {
+  //   const parentIndex = this.fieldset.findIndex((field) => field.name === name);
 
-    if (toggleValue) {
-      this.showChildren(parentIndex);
-    } else {
-      this.hideChildren(parentIndex);
-    }
-  }
+  //   if (toggleValue) {
+  //     this.showChildren(parentIndex);
+  //   } else {
+  //     this.hideChildren(parentIndex);
+  //   }
+  // }
 
-  hideChildren(parentIndex: number): void {
-    const parent = { ...this.fieldset[parentIndex] };
+  // hideChildren(parentIndex: number): void {
+  //   const parent = { ...this.fieldset[parentIndex] };
 
-    if (!parent.children) {
-      return;
-    }
+  //   if (!parent.children) {
+  //     return;
+  //   }
 
-    for (let i = 0; i < parent.children.length; i++) {
-      this.form.get(parent.children[i].name).disable();
-      parent.children[i].visible = false;
-    }
-  }
+  //   for (let i = 0; i < parent.children.length; i++) {
+  //     this.form.get(parent.children[i].name).disable();
+  //     parent.children[i].visible = false;
+  //   }
+  // }
 
-  showChildren(parentIndex): void {
-    const parent = { ...this.fieldset[parentIndex] };
+  // showChildren(parentIndex): void {
+  //   const parent = { ...this.fieldset[parentIndex] };
 
-    if (!parent.children) {
-      return;
-    }
+  //   if (!parent.children) {
+  //     return;
+  //   }
 
-    for (let i = 0; i < parent.children.length; i++) {
-      this.form.get(parent.children[i].name).enable();
-      parent.children[i].visible = true;
-    }
-  }
+  //   for (let i = 0; i < parent.children.length; i++) {
+  //     this.form.get(parent.children[i].name).enable();
+  //     parent.children[i].visible = true;
+  //   }
+  // }
 
   extractFormValues(form): KeyValuePair[] {
     /**
@@ -279,5 +230,11 @@ export class DynamicFormComponent implements OnInit {
       });
     }
     return formValues;
+  }
+
+  test() {
+    let values = this.form.value;
+
+    this.emitFormValues.emit(values);
   }
 }

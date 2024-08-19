@@ -1,5 +1,5 @@
 import { Validators } from '@angular/forms';
-import { FieldType } from '../app.component';
+import { FieldType } from './field-type';
 
 export interface Field {
   name: string;

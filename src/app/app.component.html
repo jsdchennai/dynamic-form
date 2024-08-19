@@ -1,1 +1,4 @@
-<app-dynamic-form [fieldset]="leftForm"></app-dynamic-form>
+<app-dynamic-form
+  [fieldset]="leftForm"
+  (emitFormValues)="test($event)"
+></app-dynamic-form>
