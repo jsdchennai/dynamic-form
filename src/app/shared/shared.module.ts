@@ -11,6 +11,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatCardModule } from '@angular/material/card';
 
 import { components } from './components';
 
@@ -27,6 +29,8 @@ const Shared_Modules = [
   MatSlideToggleModule,
   MatListModule,
   MatButtonModule,
+  MatMomentDateModule,
+  MatCardModule,
 ];
 
 @NgModule({

@@ -12,12 +12,13 @@
   <!-- DatePicker Starts -->
 
   <ng-container *ngSwitchCase="fieldType.DatePicker">
-    <mat-form-field>
+    <mat-form-field [appearance]="appearance">
       <input
         matInput
         [matDatepicker]="picker"
-        [placeholder]="field.name"
+        [placeholder]="field.placeholder"
         [formControl]="control"
+        (dateChange)="handleDatePickerChange($event, field)"
       />
       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
@@ -45,12 +46,19 @@
   <!-- Select Dropdown Starts -->
 
   <ng-container *ngSwitchCase="fieldType.SelectDropDown">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ field.name }}</mat-label>
-      <mat-select [placeholder]="field.name" [formControl]="control">
-        <mat-option *ngFor="let option of field.options" [value]="option">{{
-          option
-        }}</mat-option>
+    <mat-form-field [appearance]="appearance">
+      <mat-label>{{ field.label }}</mat-label>
+      <mat-select
+        [placeholder]="field.placeholder"
+        [formControl]="control"
+        (selectionChange)="handleSelectChange($event, field)"
+        [multiple]="field.multiple"
+      >
+        <mat-option
+          *ngFor="let option of field.options"
+          [value]="option.value"
+          >{{ option.name }}</mat-option
+        >
       </mat-select>
     </mat-form-field>
   </ng-container>
@@ -60,10 +68,13 @@
   <!-- Select List Starts -->
 
   <ng-container *ngSwitchCase="fieldType.SelectList">
-    <mat-selection-list [formControl]="control" color="primary">
+    <mat-selection-list
+      [formControl]="control"
+      color="primary"
+      (selectionChange)="handleSelectListChange($event, field)"
+    >
       <mat-list-option
         *ngFor="let option of field.options"
-        mySelectionList
         [value]="option"
         color="primary"
         checkboxPosition="before"
@@ -78,12 +89,13 @@
   <!-- TextArea Starts -->
 
   <ng-container *ngSwitchCase="fieldType.TextArea">
-    <mat-form-field appearance="outline">
+    <mat-form-field [appearance]="appearance">
       <textarea
         matInput
         type="text"
         [formControl]="control"
-        [placeholder]="field.name"
+        [placeholder]="field.placeholder"
+        (input)="handleInputChange($event, field)"
       ></textarea>
     </mat-form-field>
   </ng-container>
@@ -93,12 +105,13 @@
   <!-- TextArea Starts -->
 
   <ng-container *ngSwitchCase="fieldType.TextField">
-    <mat-form-field appearance="outline">
+    <mat-form-field [appearance]="appearance">
       <input
         matInput
         type="text"
         [formControl]="control"
-        [placeholder]="field.name"
+        [placeholder]="field.placeholder"
+        (input)="handleInputChange($event, field)"
       />
     </mat-form-field>
   </ng-container>

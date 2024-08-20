@@ -14,8 +14,9 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { Field, KeyValuePair } from 'src/app/models';
-// import { Error, Field, KeyValuePair } from '../models';
+import { MatFormFieldAppearance } from '@angular/material/form-field';
+import { AgeGroup, AgeRange, Field, KeyValuePair } from 'src/app/models';
+import moment from 'moment';
 
 @Component({
   selector: 'app-dynamic-form',
@@ -23,45 +24,24 @@ import { Field, KeyValuePair } from 'src/app/models';
   styleUrls: ['./dynamic-form.component.scss'],
 })
 export class DynamicFormComponent implements OnInit {
-  protected readonly formBuilder = inject(UntypedFormBuilder);
+  public form: UntypedFormGroup;
 
-  /**
-   * Initialize Inputs passed in from parent component
-   */
+  public formInitialized: boolean = false;
+
+  formBuilder = inject(UntypedFormBuilder);
+
   @Input() fieldset: Field[]; // Required
+
   @Input() errors: Error[]; // Optional
-  @Input() prefillData: KeyValuePair[]; // Optional (default values)
+
   @Input() readOnly = false; // Optional
 
-  /**
-   * Use this Output to pass values back to the parent component
-   */
-  @Output() emitFormValues = new EventEmitter();
+  @Input() appearance: MatFormFieldAppearance;
 
-  /**
-   * Initialize empty Reactive Form Group, set marker to false
-   * until Form Controls have been added and the form is ready.
-   */
-  public form: UntypedFormGroup;
-  public formReady = false;
-
-  /**
-   * Allow optional slide toggles to show/hide conditional (child) fields.
-   */
-  private togglesWithChildren: {
-    name: string;
-    value: boolean;
-    children: Field[];
-  }[] = [];
+  moment = moment();
 
   ngOnInit(): void {
-    /**
-     * Confirm a fieldset was passed in
-     */
     if (this.fieldset) {
-      /**
-       * Initialize Reactive Form
-       */
       this.initializeForm();
     } else {
       console.warn('Please pass a fieldset into the dynamic form component.');
@@ -71,170 +51,119 @@ export class DynamicFormComponent implements OnInit {
   initializeForm(): void {
     this.form = this.formBuilder.group({});
 
-    /**
-     * Iterate through fields for each section
-     */
     this.fieldset.forEach((field) => {
-      /**
-       * Create each form field and add it to the Form Group
-       */
       this.form.addControl(field.name, this.initializeFormControl(field));
-
-      /**
-       * Add Slide Toggle child fields if needed
-       */
-      // if (field.children) {
-      //   field.children.forEach((child) => {
-      //     this.form.addControl(child.name, this.initializeFormControl(child));
-      //   });
-      //   this.togglesWithChildren.push({
-      //     name: field.name,
-      //     value: field.defaultValue,
-      //     children: field.children,
-      //   });
-      // }
     });
 
-    /**
-     * This is for demo purposes and should be removed for production code
-     * debounceTime added to wait for the user to stop typing
-     */
-    // this.form.valueChanges.pipe(debounceTime(100)).subscribe(data => {
-    //   console.log('Dynamic form changed: ', data, this.form.controls);
-    // });
-
-    /**
-     * Populate the Slide Toggle child fields if needed
-     */
-    // this.handleSlideToggleChildren();
-
-    /**
-     * That's it, we're ready to go! Turn on the Template! 🥳
-     */
-    this.formReady = true;
+    this.formInitialized = true;
   }
 
   initializeFormControl(field): UntypedFormControl {
-    let value;
+    let value: any;
 
-    /**
-     * Populate defaultValues from constants if assigned
-     */
     if (typeof field.defaultValue !== 'undefined') {
       value = field.defaultValue;
     }
 
-    /**
-     * Default Slide Toggles to true unless otherwise specified,
-     * push specific false toggles to falseToggles array
-     */
-    // if (field.type === 5) {
-    //   if (typeof value === 'undefined') {
-    //     value = true;
-    //   }
-
-    //   if (field.defaultValue === false) {
-    //     this.hideChildren(field);
-    //   }
-    // }
-
-    /**
-     * Check each field for a coordinating field in prefillData
-     */
-    // if (this.prefillData) {
-    //   const defaultValue = this.prefillData.filter(
-    //     (element, index) => element.key === field.name
-    //   );
-    //   if (defaultValue.length) {
-    //     value = defaultValue[0].value;
-    //   }
-    // }
-
-    /**
-     * Handle validation (or initialize null), disabled fields, and visibility
-     * (passing in readOnly = true will disabled ALL fields)
-     */
     const validation = field.validation ? field.validation : [];
     const isDisabled = field.disabled || this.readOnly ? true : false;
-    /**
-     * That's it, we're done! Return our new Form Control up to the form.
-     */
+
     return this.formBuilder.control(
       { value, disabled: isDisabled },
       validation
     );
   }
 
-  handleSlideToggleChildren(): void {
-    /**
-     * Set up valueChanges subscription for each Slide Toggle field w/ children
-     */
-    // this.togglesWithChildren.forEach((parent) => {
-    //   this.form.controls[parent.name].valueChanges.subscribe((value) => {
-    //     this.toggleChildren(parent.name, value);
-    //   });
-    // });
+  calculateDuration() {
+    let startDate = moment(this.form.get('startDate').value);
+    let endDate = moment(this.form.get('endDate').value);
+    let difference = endDate.diff(startDate, 'days');
+    this.form.get('duration').patchValue(difference);
   }
 
-  // toggleChildren(name, toggleValue): void {
-  //   const parentIndex = this.fieldset.findIndex((field) => field.name === name);
+  updateAgeGroup(event) {
+    switch (event.value) {
+      case AgeGroup.Infant:
+        this.form.get('ageRange').patchValue(AgeRange.Zero_To_Two);
+        break;
 
-  //   if (toggleValue) {
-  //     this.showChildren(parentIndex);
-  //   } else {
-  //     this.hideChildren(parentIndex);
-  //   }
-  // }
+      case AgeGroup.Child:
+        this.form.get('ageRange').patchValue(AgeRange.Three_To_Twelve);
+        break;
 
-  // hideChildren(parentIndex: number): void {
-  //   const parent = { ...this.fieldset[parentIndex] };
+      case AgeGroup.Teenager:
+        this.form.get('ageRange').patchValue(AgeRange.Thirteen_To_Nineteen);
+        break;
 
-  //   if (!parent.children) {
-  //     return;
-  //   }
+      case AgeGroup.Young_Adult:
+        this.form.get('ageRange').patchValue(AgeRange.Twenty_To_ThirtyNine);
+        break;
 
-  //   for (let i = 0; i < parent.children.length; i++) {
-  //     this.form.get(parent.children[i].name).disable();
-  //     parent.children[i].visible = false;
-  //   }
-  // }
+      case AgeGroup.Adult:
+        this.form.get('ageRange').patchValue(AgeRange.Fourty_To_FiftyNine);
+        break;
 
-  // showChildren(parentIndex): void {
-  //   const parent = { ...this.fieldset[parentIndex] };
-
-  //   if (!parent.children) {
-  //     return;
-  //   }
-
-  //   for (let i = 0; i < parent.children.length; i++) {
-  //     this.form.get(parent.children[i].name).enable();
-  //     parent.children[i].visible = true;
-  //   }
-  // }
-
-  extractFormValues(form): KeyValuePair[] {
-    /**
-     * Extract Form Field Names and Values into an array of key value pairs
-     */
-    const formValues = new Array<KeyValuePair>();
-    if (form.controls) {
-      Object.keys(form.controls).forEach((key) => {
-        if (form.controls[key].controls) {
-          formValues.push({
-            key,
-            value: this.extractFormValues(form.controls[key]),
-          });
-        } else {
-          formValues.push({ key, value: form.get(key).value });
-        }
-      });
+      case AgeGroup.Senior:
+        this.form.get('ageRange').patchValue(AgeRange.Sixty_Plus);
+        break;
     }
-    return formValues;
   }
 
-  test() {
-    let values = this.form.value;
+  updateAgeRange(event) {
+    switch (event.value) {
+      case AgeRange.Zero_To_Two:
+        this.form.get('ageGroup').patchValue(AgeGroup.Infant);
+        break;
 
-    this.emitFormValues.emit(values);
+      case AgeRange.Three_To_Twelve:
+        this.form.get('ageGroup').patchValue(AgeGroup.Child);
+        break;
+
+      case AgeRange.Thirteen_To_Nineteen:
+        this.form.get('ageGroup').patchValue(AgeGroup.Teenager);
+        break;
+
+      case AgeRange.Twenty_To_ThirtyNine:
+        this.form.get('ageGroup').patchValue(AgeGroup.Young_Adult);
+        break;
+
+      case AgeRange.Fourty_To_FiftyNine:
+        this.form.get('ageGroup').patchValue(AgeGroup.Adult);
+        break;
+
+      case AgeRange.Sixty_Plus:
+        this.form.get('ageGroup').patchValue(AgeGroup.Senior);
+        break;
+    }
   }
+
+  handleDatePickerChange(event) {
+    if (event.field.name == 'startDate') {
+      this.calculateDuration();
+    }
+
+    if (event.field.name == 'endDate') {
+      this.calculateDuration();
+    }
+
+    // if (event.field.name == 'duration') {
+    //   let startDate = moment(this.form.get('startDate').value);
+    //   let endDate = moment(this.form.get('endDate').value);
+    //   let duration = this.form.get('duration').value;
+    //   endDate.add(duration, 'days');
+    //   this.form.get('endDate').patchValue(endDate);
+    // }
+  }
+
+  handleSelectChange(event) {
+    if (event.field.name == 'ageGroup') {
+      this.updateAgeGroup(event);
+    }
+
+    if (event.field.name == 'ageRange') {
+      this.updateAgeRange(event);
+    }
+  }
+
+  handleInputChange(event) {}
 }

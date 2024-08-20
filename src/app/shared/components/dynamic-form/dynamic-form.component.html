@@ -1,7 +1,14 @@
-<form [formGroup]="form">
-  <ng-container *ngFor="let field of fieldset">
-    <app-dynamic-form-field [field]="field"></app-dynamic-form-field>
-  </ng-container>
+<ng-container *ngIf="formInitialized">
+  <form [formGroup]="form">
+    <ng-container *ngFor="let field of fieldset">
+      <app-dynamic-form-field
+        [appearance]="appearance"
+        [field]="field"
+        (submitDatePickerChange)="handleDatePickerChange($event)"
+        (submitSelectChange)="handleSelectChange($event)"
+      ></app-dynamic-form-field>
+    </ng-container>
 
-  <button mat-raised-button color="primary" (click)="test()">Submit</button>
-</form>
+    <button mat-raised-button color="primary">Submit</button>
+  </form>
+</ng-container>

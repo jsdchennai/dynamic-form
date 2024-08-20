@@ -3,12 +3,13 @@ import { FieldType } from './field-type';
 
 export interface Field {
   name: string;
+  label?: string;
+  placeholder?: string;
   type: FieldType;
-  children?: Field[];
   defaultValue?: any;
+  multiple?: boolean;
   disabled?: boolean;
-  options?: string[];
-  parent?: string;
+  options?: any;
   validation?: Validators[];
   visible?: boolean;
 }
