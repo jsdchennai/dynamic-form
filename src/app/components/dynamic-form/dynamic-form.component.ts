@@ -96,6 +96,17 @@ export class DynamicFormComponent implements OnInit {
   calculateDuration() {
     let startDate = moment(this.form.get('startDate').value);
     let endDate = moment(this.form.get('endDate').value);
+
+    if (startDate.isAfter(endDate)) {
+      alert('The start date must be lesser than end date');
+      return;
+    }
+
+    if (endDate.isBefore(startDate)) {
+      alert('The end date must be greater than start date');
+      return;
+    }
+
     let difference = endDate.diff(startDate, 'days');
 
     if (!isNaN(difference)) {
@@ -103,7 +114,7 @@ export class DynamicFormComponent implements OnInit {
     }
   }
 
-  updateAgeGroup(event) {
+  updateAgeRange(event) {
     switch (event.value) {
       case AgeGroup.Infant:
         this.form.get('ageRange').patchValue(AgeRange.Zero_To_Two);
@@ -131,7 +142,7 @@ export class DynamicFormComponent implements OnInit {
     }
   }
 
-  updateAgeRange(event) {
+  updateAgeGroup(event) {
     switch (event.value) {
       case AgeRange.Zero_To_Two:
         this.form.get('ageGroup').patchValue(AgeGroup.Infant);
@@ -171,11 +182,11 @@ export class DynamicFormComponent implements OnInit {
 
   handleSelectChange(event) {
     if (event.field.name == 'ageGroup') {
-      this.updateAgeGroup(event);
+      this.updateAgeRange(event);
     }
 
     if (event.field.name == 'ageRange') {
-      this.updateAgeRange(event);
+      this.updateAgeGroup(event);
     }
   }
 
