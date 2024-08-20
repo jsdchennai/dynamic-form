@@ -1,13 +1,4 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormGroupDirective, UntypedFormControl } from '@angular/forms';
 
 import { MatFormFieldAppearance } from '@angular/material/form-field';
@@ -15,15 +6,13 @@ import { MatSelectChange } from '@angular/material/select';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 import { Field, FieldType } from 'src/app/models';
-import { debounce, debounceTime, distinctUntilChanged, fromEvent } from 'rxjs';
-import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-dynamic-form-field',
   templateUrl: './dynamic-form-field.component.html',
   styleUrls: ['./dynamic-form-field.component.scss'],
 })
-export class DynamicFormFieldComponent implements OnInit, AfterViewInit {
+export class DynamicFormFieldComponent implements OnInit {
   public fieldType = FieldType;
 
   public control: UntypedFormControl;
@@ -81,6 +70,4 @@ export class DynamicFormFieldComponent implements OnInit, AfterViewInit {
       this.field.name
     ) as UntypedFormControl;
   }
-
-  ngAfterViewInit(): void {}
 }

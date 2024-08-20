@@ -5,7 +5,7 @@ import {
   UntypedFormGroup,
 } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
-import { AgeGroup, AgeRange, Field } from 'src/app/models';
+import { AgeGroup, AgeRange, Error, Field } from 'src/app/models';
 import moment from 'moment';
 
 @Component({
@@ -22,9 +22,9 @@ export class DynamicFormComponent implements OnInit {
 
   @Input() fieldset: Field[]; // Required
 
-  @Input() errors: Error[]; // Optional
+  @Input() errors: Error[] = []; // Optional
 
-  @Input() readOnly = false; // Optional
+  @Input() disabled = false; // Optional
 
   @Input() appearance: MatFormFieldAppearance;
 
@@ -53,8 +53,8 @@ export class DynamicFormComponent implements OnInit {
       value = field.defaultValue;
     }
 
-    const validation = field.validation ? field.validation : [];
-    const isDisabled = field.disabled || this.readOnly ? true : false;
+    let validation = field.validation ? field.validation : [];
+    let isDisabled = field.disabled || this.disabled ? true : false;
 
     return this.formBuilder.control(
       { value, disabled: isDisabled },
@@ -146,7 +146,6 @@ export class DynamicFormComponent implements OnInit {
   }
 
   handleInputChange(event) {
-    let startDate = moment(this.form.get('startDate').value);
     let endDate = moment(this.form.get('startDate').value);
     endDate.add(event.value, 'days');
     this.form.get('endDate').patchValue(endDate);

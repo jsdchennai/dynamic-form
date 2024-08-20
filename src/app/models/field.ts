@@ -13,4 +13,5 @@ export interface Field {
   options?: any;
   validation?: Validators[];
   visible?: boolean;
+  datePickerMin?: Date;
 }

@@ -8,6 +8,14 @@
         (submitSelectChange)="handleSelectChange($event)"
         (submitInputChange)="handleInputChange($event)"
       ></app-dynamic-form-field>
+
+      <div [ngxErrors]="field.name">
+        <ng-container *ngFor="let error of errors">
+          <div [ngxError]="error.name" class="error">
+            {{ error.message }}
+          </div>
+        </ng-container>
+      </div>
     </ng-container>
 
     <button mat-raised-button color="primary">Submit</button>

@@ -1,6 +1,6 @@
-import { AfterViewInit, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { AgeGroup, AgeRange, Field, FieldType } from './models';
+import { AgeGroup, AgeRange, Error, Field, FieldType } from './models';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { AgeGroupOptions, AgeRangeOptions, Zero } from './constants';
 
@@ -9,9 +9,7 @@ import { AgeGroupOptions, AgeRangeOptions, Zero } from './constants';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements AfterViewInit {
-  constructor() {}
-
+export class AppComponent {
   appearance: MatFormFieldAppearance = 'outline';
 
   fields: Field[] = [
@@ -42,6 +40,7 @@ export class AppComponent implements AfterViewInit {
       type: FieldType.DatePicker,
       defaultValue: new Date(),
       validation: [Validators.required],
+      datePickerMin: new Date(),
     },
     {
       name: 'endDate',
@@ -50,6 +49,7 @@ export class AppComponent implements AfterViewInit {
       type: FieldType.DatePicker,
       defaultValue: new Date(),
       validation: [Validators.required],
+      datePickerMin: new Date(),
     },
     {
       name: 'duration',
@@ -62,5 +62,11 @@ export class AppComponent implements AfterViewInit {
     },
   ];
 
-  ngAfterViewInit(): void {}
+  errors: Error[] = [
+    {
+      name: 'required',
+      message: 'This field is required.',
+      rules: ['dirty'],
+    },
+  ];
 }
