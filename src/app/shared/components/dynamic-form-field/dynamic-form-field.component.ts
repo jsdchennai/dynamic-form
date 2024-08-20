@@ -27,6 +27,12 @@ export class DynamicFormFieldComponent implements OnInit {
 
   @Output() submitInputChange = new EventEmitter();
 
+  @Output() submitCheckBoxChange = new EventEmitter();
+
+  @Output() submitRadioChange = new EventEmitter();
+
+  @Output() submitSelectListChange = new EventEmitter();
+
   constructor(private formGroupDirective: FormGroupDirective) {}
 
   handleSelectChange(matSelectChange: MatSelectChange, field: Field) {
@@ -66,6 +72,12 @@ export class DynamicFormFieldComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    /**
+     * FormGroupDirective adds the FormControl to the parent FormGroup
+     * without the need to pass the inputs and event emitters.
+     *
+     */
+
     this.control = this.formGroupDirective.control.get(
       this.field.name
     ) as UntypedFormControl;

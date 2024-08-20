@@ -1,4 +1,11 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormControl,
@@ -14,32 +21,46 @@ import moment from 'moment';
   styleUrls: ['./dynamic-form.component.scss'],
 })
 export class DynamicFormComponent implements OnInit {
-  public form: UntypedFormGroup;
+  public formBuilder = inject(UntypedFormBuilder);
 
+  /**
+   * Initialize empty Form Group,
+   * The formInitialized marker is true, when all the FormControls added to the FormGroup
+   */
+
+  public form: UntypedFormGroup;
   public formInitialized: boolean = false;
 
-  formBuilder = inject(UntypedFormBuilder);
+  /**
+   * The fields input is the required one and responsbile for the building of the Form
+   */
 
-  @Input() fieldset: Field[]; // Required
+  @Input() fields: Field[] = [];
+  @Input() errors: Error[] = [];
+  @Input() disabled = false;
 
-  @Input() errors: Error[] = []; // Optional
-
-  @Input() disabled = false; // Optional
+  /**
+   * It decides the appearance of the FormField. It has two options outline or fill.
+   */
 
   @Input() appearance: MatFormFieldAppearance;
 
+  /**
+   * submitFormValue event emitter is used to emit the form value to the parent.
+   */
+
+  @Output() submitFormValue = new EventEmitter();
+
   ngOnInit(): void {
-    if (this.fieldset) {
+    if (this.fields) {
       this.initializeForm();
-    } else {
-      console.warn('Please pass a fieldset into the dynamic form component.');
     }
   }
 
   initializeForm(): void {
     this.form = this.formBuilder.group({});
 
-    this.fieldset.forEach((field) => {
+    this.fields.forEach((field) => {
       this.form.addControl(field.name, this.initializeFormControl(field));
     });
 
@@ -49,13 +70,23 @@ export class DynamicFormComponent implements OnInit {
   initializeFormControl(field): UntypedFormControl {
     let value: any;
 
+    /**
+     * If the default value is given, that will be assigned to the FormControl
+     */
     if (typeof field.defaultValue !== 'undefined') {
       value = field.defaultValue;
     }
 
+    /**
+     * Sets the validation for the FormControl, if the Validators are given.
+     * isDisabled property disables the FormControl and disabled property disables the whole FormGroup.
+     */
     let validation = field.validation ? field.validation : [];
-    let isDisabled = field.disabled || this.disabled ? true : false;
+    let isDisabled = field.disabled || this.disabled;
 
+    /**
+     *  Return new Form Control up to the form.
+     */
     return this.formBuilder.control(
       { value, disabled: isDisabled },
       validation
@@ -66,7 +97,10 @@ export class DynamicFormComponent implements OnInit {
     let startDate = moment(this.form.get('startDate').value);
     let endDate = moment(this.form.get('endDate').value);
     let difference = endDate.diff(startDate, 'days');
-    this.form.get('duration').patchValue(difference);
+
+    if (!isNaN(difference)) {
+      this.form.get('duration').patchValue(difference);
+    }
   }
 
   updateAgeGroup(event) {
@@ -149,5 +183,9 @@ export class DynamicFormComponent implements OnInit {
     let endDate = moment(this.form.get('startDate').value);
     endDate.add(event.value, 'days');
     this.form.get('endDate').patchValue(endDate);
+  }
+
+  onSubmit() {
+    this.submitFormValue.emit(this.form.value);
   }
 }

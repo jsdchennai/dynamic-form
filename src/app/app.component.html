@@ -7,9 +7,10 @@
 
   <mat-card-content>
     <app-dynamic-form
-      [fieldset]="fields"
+      [fields]="fields"
       [appearance]="appearance"
       [errors]="errors"
+      (submitFormValue)="submit($event)"
     ></app-dynamic-form>
   </mat-card-content>
 </mat-card>

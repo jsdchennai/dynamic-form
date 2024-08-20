@@ -69,4 +69,8 @@ export class AppComponent {
       rules: ['dirty'],
     },
   ];
+
+  submit(value) {
+    console.log(value);
+  }
 }

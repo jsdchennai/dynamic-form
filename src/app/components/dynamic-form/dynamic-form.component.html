@@ -1,6 +1,6 @@
 <ng-container *ngIf="formInitialized">
-  <form [formGroup]="form">
-    <ng-container *ngFor="let field of fieldset">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <ng-container *ngFor="let field of fields">
       <app-dynamic-form-field
         [appearance]="appearance"
         [field]="field"
@@ -18,6 +18,6 @@
       </div>
     </ng-container>
 
-    <button mat-raised-button color="primary">Submit</button>
+    <button type="submit" mat-raised-button color="primary">Submit</button>
   </form>
 </ng-container>
