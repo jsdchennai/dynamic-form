@@ -1,21 +1,11 @@
+import { Component, inject, Input, OnInit } from '@angular/core';
 import {
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
-import {
-  FormControl,
-  FormGroup,
   UntypedFormBuilder,
   UntypedFormControl,
   UntypedFormGroup,
-  Validators,
 } from '@angular/forms';
 import { MatFormFieldAppearance } from '@angular/material/form-field';
-import { AgeGroup, AgeRange, Field, KeyValuePair } from 'src/app/models';
+import { AgeGroup, AgeRange, Field } from 'src/app/models';
 import moment from 'moment';
 
 @Component({
@@ -37,8 +27,6 @@ export class DynamicFormComponent implements OnInit {
   @Input() readOnly = false; // Optional
 
   @Input() appearance: MatFormFieldAppearance;
-
-  moment = moment();
 
   ngOnInit(): void {
     if (this.fieldset) {
@@ -145,14 +133,6 @@ export class DynamicFormComponent implements OnInit {
     if (event.field.name == 'endDate') {
       this.calculateDuration();
     }
-
-    // if (event.field.name == 'duration') {
-    //   let startDate = moment(this.form.get('startDate').value);
-    //   let endDate = moment(this.form.get('endDate').value);
-    //   let duration = this.form.get('duration').value;
-    //   endDate.add(duration, 'days');
-    //   this.form.get('endDate').patchValue(endDate);
-    // }
   }
 
   handleSelectChange(event) {
@@ -165,5 +145,10 @@ export class DynamicFormComponent implements OnInit {
     }
   }
 
-  handleInputChange(event) {}
+  handleInputChange(event) {
+    let startDate = moment(this.form.get('startDate').value);
+    let endDate = moment(this.form.get('startDate').value);
+    endDate.add(event.value, 'days');
+    this.form.get('endDate').patchValue(endDate);
+  }
 }

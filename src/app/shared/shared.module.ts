@@ -15,6 +15,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatCardModule } from '@angular/material/card';
 
 import { components } from './components';
+import { DelayedInputDirective } from './directive/delayed-input.directive';
 
 const Shared_Modules = [
   CommonModule,
@@ -34,9 +35,9 @@ const Shared_Modules = [
 ];
 
 @NgModule({
-  declarations: [...components],
+  declarations: [...components, DelayedInputDirective],
   imports: [...Shared_Modules],
-  exports: [...Shared_Modules, ...components],
+  exports: [...Shared_Modules, ...components, DelayedInputDirective],
 })
 export class SharedModule {
   public static forRoot(): ModuleWithProviders<SharedModule> {

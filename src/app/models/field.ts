@@ -6,6 +6,7 @@ export interface Field {
   label?: string;
   placeholder?: string;
   type: FieldType;
+  fieldType?: string;
   defaultValue?: any;
   multiple?: boolean;
   disabled?: boolean;

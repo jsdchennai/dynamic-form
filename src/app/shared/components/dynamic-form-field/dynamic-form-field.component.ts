@@ -1,43 +1,42 @@
 import {
+  AfterViewInit,
   Component,
+  ElementRef,
   EventEmitter,
-  inject,
   Input,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
-import {
-  FormGroupDirective,
-  UntypedFormControl,
-  Validators,
-} from '@angular/forms';
-import { Field, FieldType } from 'src/app/models';
-import moment from 'moment';
+import { FormGroupDirective, UntypedFormControl } from '@angular/forms';
+
 import { MatFormFieldAppearance } from '@angular/material/form-field';
 import { MatSelectChange } from '@angular/material/select';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+
+import { Field, FieldType } from 'src/app/models';
+import { debounce, debounceTime, distinctUntilChanged, fromEvent } from 'rxjs';
+import { MatInput } from '@angular/material/input';
 
 @Component({
   selector: 'app-dynamic-form-field',
   templateUrl: './dynamic-form-field.component.html',
   styleUrls: ['./dynamic-form-field.component.scss'],
 })
-export class DynamicFormFieldComponent implements OnInit {
+export class DynamicFormFieldComponent implements OnInit, AfterViewInit {
   public fieldType = FieldType;
 
   public control: UntypedFormControl;
-
-  moment = moment();
 
   @Input() field: Field;
 
   @Input() appearance: MatFormFieldAppearance;
 
-  @Output() submitted = new EventEmitter();
-
   @Output() submitSelectChange = new EventEmitter();
 
   @Output() submitDatePickerChange = new EventEmitter();
+
+  @Output() submitInputChange = new EventEmitter();
 
   constructor(private formGroupDirective: FormGroupDirective) {}
 
@@ -56,8 +55,6 @@ export class DynamicFormFieldComponent implements OnInit {
       field,
     };
 
-    console.log(obj);
-
     this.submitDatePickerChange.emit(obj);
   }
 
@@ -70,18 +67,20 @@ export class DynamicFormFieldComponent implements OnInit {
     this.submitSelectChange.emit(obj);
   }
 
-  handleInputChange(event, field) {
+  handleInputChange(event: any, field) {
     let obj = {
-      event,
+      value: event.target.value,
       field,
     };
+
+    this.submitInputChange.emit(obj);
   }
 
   ngOnInit(): void {
     this.control = this.formGroupDirective.control.get(
       this.field.name
     ) as UntypedFormControl;
-
-    moment();
   }
+
+  ngAfterViewInit(): void {}
 }

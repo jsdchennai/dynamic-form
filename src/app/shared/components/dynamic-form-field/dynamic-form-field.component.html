@@ -107,11 +107,13 @@
   <ng-container *ngSwitchCase="fieldType.TextField">
     <mat-form-field [appearance]="appearance">
       <input
+        delayedInput
         matInput
-        type="text"
+        [type]="field.fieldType"
         [formControl]="control"
         [placeholder]="field.placeholder"
-        (input)="handleInputChange($event, field)"
+        (delayedInput)="handleInputChange($event, field)"
+        [delayTime]="700"
       />
     </mat-form-field>
   </ng-container>

@@ -56,6 +56,7 @@ export class AppComponent implements AfterViewInit {
       label: 'Duration',
       placeholder: 'Duration',
       type: FieldType.TextField,
+      fieldType: 'number',
       defaultValue: Zero,
       validation: [Validators.required],
     },
